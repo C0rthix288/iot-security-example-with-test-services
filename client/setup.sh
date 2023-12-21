@@ -94,7 +94,7 @@ register_wireguard_keys() {
 
     
     server_public_key=$(echo $response | jq -r '.server_public_key')
-    server_ip=10.2.10.148
+    server_ip=$(echo $response | jq -r '.server_ip')
     internal_ip=$(echo $response | jq -r '.internal_ip')
 
     

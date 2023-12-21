@@ -52,6 +52,54 @@ The primary goals were secure device provisioning, management and transmission o
 ### Simulating the data collection
 The edge devices should collect real metrics, however for test-purposes there was written a script that simulates collection of authentic weather data.
 
+## How to test that?
+#### Server side
+First we need to install Wireguard and tools, and create a configuration on the server host.
+From the `server/wireguard-provisioning-service/` run the 
+```
+./start_wg.sh
+```
+The keys and configuration will be generated.
+
+Then proceed with building images and starting the containers.
+In the `server/`
+run the
+```
+docker compose up --build
+```
+To build images and start the services.
+
+Next run the `watchdog.sh` as a systemd service, or just run it (e.g. in Tmux).
+```
+./watchdog.sh
+```
+
+#### Client-side (edge)
+Build the image.
+```
+docker build -t client-app ./app
+```
+
+Before running the setup.sh we need to obtain the enrollment token from server. Reach the wireguard-provisioning-service at the /generate_token/ route.
+Then start
+```
+./setup.sh
+```
+
+Fill in the required setup.
+The Control Plane URL must contain http or https so for example You would put `http://192.168.0.5` or `https://controlplane.yourdomain.tld`
+If You are using the service internally, or exposing ports, fill in the ports for both services, or leave blank if not applicable.
+You will be prompted for 
+- control plane url
+- enrollment token (auth)
+- ports for the wireguard provisioning service and weather data service
+
+When setup is completed and You see that device has been registered, You can proceed with starting the container.
+```
+docker run --name client-app --network host --restart always -v /opt/gProVision/secrets:/opt/gProVision/secrets -d client-app
+```
+The /opt/gProVision/secrets/ is where the control plane url and device token are being stored.
+
 ### License
 Feel free to do whatever You want with this code.
 

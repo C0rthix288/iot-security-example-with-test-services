@@ -28,7 +28,7 @@ def get_ip_address():
 def send_data_to_server(data):
     device_id, special_device_token = get_device_id_and_token()
     special_device_token_hash = hash_token(special_device_token)
-    url = get_server_url() + ":8443/data/"
+    url = get_server_url() + ":8443/data/" # Remove the port if You're using proxy, or change it if you are using a different port
     ip_address = get_ip_address()  # Dynamically get the Raspberry Pi's IP address
     status = "online"  # Assuming the device is online when sending data
     current_datetime = datetime.now().isoformat()
