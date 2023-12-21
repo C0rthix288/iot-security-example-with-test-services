@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  weather-data-service:
+    build: ./weather-data-service
+    container_name: weather-data-service
+    ports:
+      - "8443:80"
+    volumes:
+      - ./weather-data-service/data:/data
+
+  wireguard-provisioning-service:
+    build: ./wireguard-provisioning-service
+    container_name: gprovision
+    volumes:
+      - /etc/wireguard:/etc/wireguard
+      - /etc/wireguard/publickey:/app/publickey
+    network_mode: host
